@@ -6,10 +6,11 @@ use structopt::StructOpt;
 
 use advent_of_code_2020::answer::Answer;
 use advent_of_code_2020::challenge::{Challenge, ChallengePart};
+use advent_of_code_2020::MovementDirection::{Down, Right};
 use advent_of_code_2020::{
-    count_policies_satisfied_by_passwords, product_of_2020_sum_pair, product_of_2020_sum_triplet,
-    to_policy_and_password, OccurrenceRestrictedPasswordPolicy, Password,
-    PositionallyRestrictedPasswordPolicy,
+    count_encountered_trees_for_movement_sequence, count_policies_satisfied_by_passwords,
+    product_of_2020_sum_pair, product_of_2020_sum_triplet, to_policy_and_password,
+    OccurrenceRestrictedPasswordPolicy, Password, PositionallyRestrictedPasswordPolicy,
 };
 
 use crate::cli::Opt;
@@ -27,6 +28,7 @@ fn execute_challenge(challenge: Challenge) {
     match challenge.day() {
         1 => run_day_1(challenge.part()).unwrap(),
         2 => run_day_2(challenge.part()).unwrap(),
+        3 => run_day_3(challenge.part()).unwrap(),
         _ => unimplemented!(),
     }
 }
@@ -64,6 +66,20 @@ fn run_day_2(part: ChallengePart) -> anyhow::Result<()> {
                 .collect::<anyhow::Result<Vec<(PositionallyRestrictedPasswordPolicy, Password)>>>(
                 )?,
         ),
+    };
+
+    println!("{}", Answer::new(result));
+    Ok(())
+}
+
+fn run_day_3(part: ChallengePart) -> anyhow::Result<()> {
+    let input = read_input("Enter password policies and passwords:");
+
+    let result: u16 = match part {
+        ChallengePart::One => {
+            count_encountered_trees_for_movement_sequence(input, vec![Right, Right, Right, Down])
+        }
+        ChallengePart::Two => unimplemented!(),
     };
 
     println!("{}", Answer::new(result));
