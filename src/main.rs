@@ -1,32 +1,44 @@
-use crate::cli::Opt;
-use advent_of_code_2020::answer::Answer;
-use advent_of_code_2020::product_of_2020_sum_pair;
 use std::io;
 use std::io::BufRead;
 use std::num::ParseIntError;
+
 use structopt::StructOpt;
+
+use advent_of_code_2020::answer::Answer;
+use advent_of_code_2020::challenge::{Challenge, ChallengePart};
+use advent_of_code_2020::{product_of_2020_sum_pair, product_of_2020_sum_triplet};
+
+use crate::cli::Opt;
 
 mod cli;
 
 fn main() {
     let opt = Opt::from_args();
+    let challenge = opt.challenge();
 
-    match opt.day() {
-        1 => run_day_1().unwrap(),
+    execute_challenge(challenge);
+}
+
+fn execute_challenge(challenge: Challenge) {
+    match challenge.day() {
+        1 => run_day_1(challenge.part()).unwrap(),
         _ => unimplemented!(),
     }
 }
 
-fn run_day_1() -> anyhow::Result<()> {
+fn run_day_1(part: ChallengePart) -> anyhow::Result<()> {
     let input = read_input("Enter numbers:");
     let numbers: Vec<u64> = input
         .iter()
         .map(|s| s.as_str().parse())
         .collect::<Result<Vec<u64>, ParseIntError>>()?;
 
-    let result: Answer<u64> = Answer::new(product_of_2020_sum_pair(numbers).unwrap());
+    let result = match part {
+        ChallengePart::One => product_of_2020_sum_pair(&*numbers).unwrap(),
+        ChallengePart::Two => product_of_2020_sum_triplet(&*numbers).unwrap(),
+    };
 
-    println!("{}", result);
+    println!("{}", Answer::new(result));
     Ok(())
 }
 
