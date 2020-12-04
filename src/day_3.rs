@@ -153,7 +153,7 @@ impl TobogganRideState {
 pub fn count_encountered_trees_for_movement_sequence(
     map_rows: Vec<String>,
     movement_sequence: Vec<MovementDirection>,
-) -> u16 {
+) -> u64 {
     let map_segment = TravelMapSegment::new(map_rows);
     let mut ride_state = TobogganRideState::new(
         TravelMapPosition::new(0, 0),
@@ -177,6 +177,21 @@ pub fn count_encountered_trees_for_movement_sequence(
     tree_count
 }
 
+pub fn product_of_tree_encounters_for_movement_sequences(
+    map_rows: Vec<String>,
+    movement_sequences: Vec<Vec<MovementDirection>>,
+) -> u64 {
+    movement_sequences
+        .iter()
+        .map(|movement_sequence| {
+            count_encountered_trees_for_movement_sequence(
+                map_rows.clone(),
+                movement_sequence.clone(),
+            )
+        })
+        .product()
+}
+
 #[cfg(test)]
 mod tests {
     use spectral::prelude::*;
@@ -186,7 +201,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn counts_hit_trees_along_a_given_path() {
+    fn counts_hit_trees_along_a_repeated_movement_sequence() {
         let map_rows = vec![
             "..##.......",
             "#...#...#..",
@@ -209,5 +224,38 @@ mod tests {
             vec![Right, Right, Right, Down],
         ))
         .is_equal_to(7)
+    }
+
+    #[test]
+    fn calculates_product_of_hit_trees_along_repeated_movement_sequences() {
+        let map_rows = vec![
+            "..##.......",
+            "#...#...#..",
+            ".#....#..#.",
+            "..#.#...#.#",
+            ".#...##..#.",
+            "..#.##.....",
+            ".#.#.#....#",
+            ".#........#",
+            "#.##...#...",
+            "#...##....#",
+            ".#..#...#.#",
+        ]
+        .iter()
+        .map(ToString::to_string)
+        .collect();
+        let movement_sequences = vec![
+            vec![Right, Down],
+            vec![Right, Right, Right, Down],
+            vec![Right, Right, Right, Right, Right, Down],
+            vec![Right, Right, Right, Right, Right, Right, Right, Down],
+            vec![Right, Down, Down],
+        ];
+
+        assert_that(&product_of_tree_encounters_for_movement_sequences(
+            map_rows,
+            movement_sequences,
+        ))
+        .is_equal_to(2 * 7 * 3 * 4 * 2)
     }
 }

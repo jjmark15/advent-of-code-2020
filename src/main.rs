@@ -9,7 +9,8 @@ use advent_of_code_2020::challenge::{Challenge, ChallengePart};
 use advent_of_code_2020::MovementDirection::{Down, Right};
 use advent_of_code_2020::{
     count_encountered_trees_for_movement_sequence, count_policies_satisfied_by_passwords,
-    product_of_2020_sum_pair, product_of_2020_sum_triplet, to_policy_and_password,
+    product_of_2020_sum_pair, product_of_2020_sum_triplet,
+    product_of_tree_encounters_for_movement_sequences, to_policy_and_password,
     OccurrenceRestrictedPasswordPolicy, Password, PositionallyRestrictedPasswordPolicy,
 };
 
@@ -75,11 +76,20 @@ fn run_day_2(part: ChallengePart) -> anyhow::Result<()> {
 fn run_day_3(part: ChallengePart) -> anyhow::Result<()> {
     let input = read_input("Enter password policies and passwords:");
 
-    let result: u16 = match part {
+    let result: u64 = match part {
         ChallengePart::One => {
             count_encountered_trees_for_movement_sequence(input, vec![Right, Right, Right, Down])
         }
-        ChallengePart::Two => unimplemented!(),
+        ChallengePart::Two => product_of_tree_encounters_for_movement_sequences(
+            input,
+            vec![
+                vec![Right, Down],
+                vec![Right, Right, Right, Down],
+                vec![Right, Right, Right, Right, Right, Down],
+                vec![Right, Right, Right, Right, Right, Right, Right, Down],
+                vec![Right, Down, Down],
+            ],
+        ),
     };
 
     println!("{}", Answer::new(result));
