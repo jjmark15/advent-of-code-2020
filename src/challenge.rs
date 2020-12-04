@@ -21,7 +21,7 @@ impl Challenge {
 }
 
 impl FromStr for Challenge {
-    type Err = ChallengeParseError;
+    type Err = anyhow::Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let re = Regex::new(r"^(\d)\.(\d)$").unwrap();
@@ -30,14 +30,10 @@ impl FromStr for Challenge {
                 day: captures.get(1).unwrap().as_str().parse().unwrap(),
                 part: captures.get(2).unwrap().as_str().parse().unwrap(),
             }),
-            None => Err(ChallengeParseError),
+            None => Err(anyhow::Error::msg("Could not parse challenge")),
         }
     }
 }
-
-#[derive(Debug, thiserror::Error)]
-#[error("Could not parse challenge")]
-pub struct ChallengeParseError;
 
 #[derive(Debug, Copy, Clone)]
 pub enum ChallengePart {
@@ -46,7 +42,7 @@ pub enum ChallengePart {
 }
 
 impl FromStr for ChallengePart {
-    type Err = ChallengeParseError;
+    type Err = anyhow::Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         match s.parse::<u8>() {
@@ -56,10 +52,10 @@ impl FromStr for ChallengePart {
                 } else if n == 2 {
                     Ok(Two)
                 } else {
-                    Err(ChallengeParseError)
+                    Err(anyhow::Error::msg("Could not parse challenge"))
                 }
             }
-            Err(_) => Err(ChallengeParseError),
+            Err(_) => Err(anyhow::Error::msg("Could not parse challenge")),
         }
     }
 }

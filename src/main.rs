@@ -8,7 +8,8 @@ use advent_of_code_2020::answer::Answer;
 use advent_of_code_2020::challenge::{Challenge, ChallengePart};
 use advent_of_code_2020::{
     count_policies_satisfied_by_passwords, product_of_2020_sum_pair, product_of_2020_sum_triplet,
-    to_policy_and_password, Password, PasswordPolicy,
+    to_policy_and_password, OccurrenceRestrictedPasswordPolicy, Password,
+    PositionallyRestrictedPasswordPolicy,
 };
 
 use crate::cli::Opt;
@@ -48,12 +49,21 @@ fn run_day_1(part: ChallengePart) -> anyhow::Result<()> {
 
 fn run_day_2(part: ChallengePart) -> anyhow::Result<()> {
     let input = read_input("Enter password policies and passwords:");
-    let policies_and_passwords: anyhow::Result<Vec<(PasswordPolicy, Password)>> =
-        input.iter().map(to_policy_and_password).collect();
 
     let result: usize = match part {
-        ChallengePart::One => count_policies_satisfied_by_passwords(policies_and_passwords?),
-        ChallengePart::Two => todo!(),
+        ChallengePart::One => count_policies_satisfied_by_passwords(
+            input
+                .iter()
+                .map(to_policy_and_password)
+                .collect::<anyhow::Result<Vec<(OccurrenceRestrictedPasswordPolicy, Password)>>>()?,
+        ),
+        ChallengePart::Two => count_policies_satisfied_by_passwords(
+            input
+                .iter()
+                .map(to_policy_and_password)
+                .collect::<anyhow::Result<Vec<(PositionallyRestrictedPasswordPolicy, Password)>>>(
+                )?,
+        ),
     };
 
     println!("{}", Answer::new(result));
