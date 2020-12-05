@@ -16,7 +16,10 @@ use advent_of_code_2020::day_3::{
     count_encountered_trees_for_movement_sequence,
     product_of_tree_encounters_for_movement_sequences,
 };
-use advent_of_code_2020::day_4::count_valid_passports_in_text;
+use advent_of_code_2020::day_4::{
+    count_valid_relaxed_validation_passports_in_text,
+    count_valid_strict_validation_passports_in_text,
+};
 
 use crate::cli::Opt;
 
@@ -106,8 +109,8 @@ fn run_day_4(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Resu
         .collect();
 
     let result: usize = match part {
-        ChallengePart::One => count_valid_passports_in_text(passport_strings),
-        ChallengePart::Two => unimplemented!(),
+        ChallengePart::One => count_valid_relaxed_validation_passports_in_text(passport_strings),
+        ChallengePart::Two => count_valid_strict_validation_passports_in_text(passport_strings),
     };
 
     println!("{}", Answer::new(result));
