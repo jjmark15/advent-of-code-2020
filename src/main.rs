@@ -119,5 +119,5 @@ fn run_day_4(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Resu
 
 fn read_input_file(p: PathBuf) -> anyhow::Result<Vec<String>> {
     let file_string = fs::read_to_string(p)?.trim().to_string();
-    Ok(file_string.split('\n').map(ToString::to_string).collect())
+    Ok(file_string.lines().map(ToString::to_string).collect())
 }
