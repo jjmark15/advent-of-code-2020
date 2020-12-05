@@ -22,6 +22,7 @@ use advent_of_code_2020::day_4::{
 };
 
 use crate::cli::Opt;
+use advent_of_code_2020::day_5::find_highest_seat_id_on_plane;
 
 mod cli;
 
@@ -39,6 +40,7 @@ fn execute_challenge(challenge: Challenge, input_text_lines: Vec<String>) {
         2 => run_day_2(challenge.part(), input_text_lines).unwrap(),
         3 => run_day_3(challenge.part(), input_text_lines).unwrap(),
         4 => run_day_4(challenge.part(), input_text_lines).unwrap(),
+        5 => run_day_5(challenge.part(), input_text_lines).unwrap(),
         _ => unimplemented!(),
     }
 }
@@ -111,6 +113,16 @@ fn run_day_4(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Resu
     let result: usize = match part {
         ChallengePart::One => count_valid_relaxed_validation_passports_in_text(passport_strings),
         ChallengePart::Two => count_valid_strict_validation_passports_in_text(passport_strings),
+    };
+
+    println!("{}", Answer::new(result));
+    Ok(())
+}
+
+fn run_day_5(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Result<()> {
+    let result = match part {
+        ChallengePart::One => find_highest_seat_id_on_plane(input_text_lines)?,
+        ChallengePart::Two => unimplemented!(),
     };
 
     println!("{}", Answer::new(result));
