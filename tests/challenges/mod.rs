@@ -1,0 +1,23 @@
+use std::path::PathBuf;
+
+mod day_01;
+mod day_02;
+mod day_03;
+mod day_04;
+
+fn challenge_command(day: u8, part: u8) -> assert_cmd::Command {
+    let mut cmd = assert_cmd::Command::cargo_bin("advent-of-code-2020").unwrap();
+
+    cmd.args(&["-c", format!("{}.{}", day, part).as_str()]);
+
+    let sample_data_path: PathBuf = ["sample_data", sample_data_file_name(day).as_str()]
+        .iter()
+        .collect();
+    cmd.args(&["-i", sample_data_path.as_os_str().to_str().unwrap()]);
+
+    cmd
+}
+
+fn sample_data_file_name(day: u8) -> String {
+    format!("day_{:02}.txt", day)
+}
