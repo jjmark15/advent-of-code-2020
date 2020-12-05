@@ -221,7 +221,7 @@ impl BinarySpacePartitionRange {
     }
 }
 
-pub fn find_highest_seat_id_on_plane(seat_code_strings: Vec<String>) -> anyhow::Result<u32> {
+fn seat_ids(seat_code_strings: Vec<String>) -> anyhow::Result<Vec<SeatId>> {
     let seat_codes = seat_code_strings
         .iter()
         .map(|s| s.as_str().parse())
@@ -229,13 +229,37 @@ pub fn find_highest_seat_id_on_plane(seat_code_strings: Vec<String>) -> anyhow::
 
     let seat_finder = SeatFinder::new(PlaneSpecification::new(128, 8));
 
-    let max_id = seat_codes
+    Ok(seat_codes
         .iter()
         .map(|seat_code| seat_finder.find_seat(seat_code))
         .map(SeatId::from_seat_position)
+        .collect())
+}
+
+pub fn find_highest_seat_id_on_plane(seat_code_strings: Vec<String>) -> anyhow::Result<u32> {
+    Ok(seat_ids(seat_code_strings)?
+        .iter()
         .max()
-        .ok_or(anyhow::Error::msg("Empty list of seat codes"))?;
-    Ok(max_id.value())
+        .ok_or(anyhow::Error::msg("Empty list of seat codes"))?
+        .value())
+}
+
+pub fn find_my_empty_seat_id(seat_code_strings: Vec<String>) -> anyhow::Result<u32> {
+    let mut sorted_seat_ids = seat_ids(seat_code_strings)?;
+    sorted_seat_ids.sort();
+
+    for (i, seat_id) in sorted_seat_ids
+        .get(1..sorted_seat_ids.len() - 2)
+        .unwrap()
+        .iter()
+        .enumerate()
+    {
+        if seat_id.value() - 1 != sorted_seat_ids.get(i).unwrap().value() {
+            return Ok(seat_id.value() - 1);
+        }
+    }
+
+    Err(anyhow::Error::msg("Did not find my seat"))
 }
 
 #[cfg(test)]

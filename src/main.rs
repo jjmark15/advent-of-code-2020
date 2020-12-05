@@ -22,7 +22,7 @@ use advent_of_code_2020::day_4::{
 };
 
 use crate::cli::Opt;
-use advent_of_code_2020::day_5::find_highest_seat_id_on_plane;
+use advent_of_code_2020::day_5::{find_highest_seat_id_on_plane, find_my_empty_seat_id};
 
 mod cli;
 
@@ -122,7 +122,7 @@ fn run_day_4(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Resu
 fn run_day_5(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Result<()> {
     let result = match part {
         ChallengePart::One => find_highest_seat_id_on_plane(input_text_lines)?,
-        ChallengePart::Two => unimplemented!(),
+        ChallengePart::Two => find_my_empty_seat_id(input_text_lines)?,
     };
 
     println!("{}", Answer::new(result));
