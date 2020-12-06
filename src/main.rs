@@ -20,9 +20,10 @@ use advent_of_code_2020::day_4::{
     count_valid_relaxed_validation_passports_in_text,
     count_valid_strict_validation_passports_in_text,
 };
+use advent_of_code_2020::day_5::{find_highest_seat_id_on_plane, find_my_empty_seat_id};
+use advent_of_code_2020::day_6::count_total_group_distinct_positive_answers;
 
 use crate::cli::Opt;
-use advent_of_code_2020::day_5::{find_highest_seat_id_on_plane, find_my_empty_seat_id};
 
 mod cli;
 
@@ -41,6 +42,7 @@ fn execute_challenge(challenge: Challenge, input_text_lines: Vec<String>) {
         3 => run_day_3(challenge.part(), input_text_lines).unwrap(),
         4 => run_day_4(challenge.part(), input_text_lines).unwrap(),
         5 => run_day_5(challenge.part(), input_text_lines).unwrap(),
+        6 => run_day_6(challenge.part(), input_text_lines).unwrap(),
         _ => unimplemented!(),
     }
 }
@@ -123,6 +125,22 @@ fn run_day_5(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Resu
     let result = match part {
         ChallengePart::One => find_highest_seat_id_on_plane(input_text_lines)?,
         ChallengePart::Two => find_my_empty_seat_id(input_text_lines)?,
+    };
+
+    println!("{}", Answer::new(result));
+    Ok(())
+}
+
+fn run_day_6(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Result<()> {
+    let passport_strings: Vec<String> = input_text_lines
+        .join("\n")
+        .split("\n\n")
+        .map(ToString::to_string)
+        .collect();
+
+    let result: usize = match part {
+        ChallengePart::One => count_total_group_distinct_positive_answers(passport_strings),
+        ChallengePart::Two => unimplemented!(),
     };
 
     println!("{}", Answer::new(result));
