@@ -1,5 +1,6 @@
 use std::str::FromStr;
 
+use lazy_static::lazy_static;
 use regex::Regex;
 
 struct PlaneSpecification {
@@ -66,9 +67,11 @@ impl FromStr for SeatCode {
     type Err = anyhow::Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let re = Regex::new(r"^([FB]{7})([RL]{3})$").unwrap();
+        lazy_static! {
+            static ref RE: Regex = Regex::new(r"^([FB]{7})([RL]{3})$").unwrap();
+        }
 
-        match re.captures(s) {
+        match RE.captures(s) {
             Some(captures) => Ok(SeatCode {
                 row_segments: captures
                     .get(1)
@@ -209,7 +212,7 @@ impl BinarySpacePartitionRange {
 
     fn use_higher(&mut self) {
         let gap_from_lower: f32 = ((self.upper as f32 - self.lower as f32) / 2_f32).ceil();
-        self.lower = self.lower + gap_from_lower as u32
+        self.lower += gap_from_lower as u32
     }
 
     fn single_result(&self) -> Option<u32> {
@@ -240,7 +243,7 @@ pub fn find_highest_seat_id_on_plane(seat_code_strings: Vec<String>) -> anyhow::
     Ok(seat_ids(seat_code_strings)?
         .iter()
         .max()
-        .ok_or(anyhow::Error::msg("Empty list of seat codes"))?
+        .ok_or_else(|| anyhow::Error::msg("Empty list of seat codes"))?
         .value())
 }
 

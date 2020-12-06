@@ -1,5 +1,6 @@
 use std::str::FromStr;
 
+use lazy_static::lazy_static;
 use regex::Regex;
 
 use crate::day_4::EyeColour::{Amber, Blue, Brown, Green, Grey, Hazel, Other};
@@ -84,8 +85,11 @@ impl FromStr for HairColour {
     type Err = anyhow::Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let re = Regex::new(r"^#[0-9a-f]{6}$").unwrap();
-        if re.is_match(s) {
+        lazy_static! {
+            static ref RE: Regex = Regex::new(r"^#[0-9a-f]{6}$").unwrap();
+        }
+
+        if RE.is_match(s) {
             Ok(HairColour {
                 code: s.to_string(),
             })
@@ -158,9 +162,11 @@ impl FromStr for Height {
     type Err = anyhow::Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let re = Regex::new(r"^(\d+)(\w+)$").unwrap();
+        lazy_static! {
+            static ref RE: Regex = Regex::new(r"^(\d+)(\w+)$").unwrap();
+        }
 
-        match re.captures(s) {
+        match RE.captures(s) {
             Some(captures) => Ok(Height {
                 value: captures.get(1).unwrap().as_str().parse()?,
                 unit: captures.get(2).unwrap().as_str().parse()?,
@@ -185,9 +191,11 @@ impl FromStr for Year {
     type Err = anyhow::Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let re = Regex::new(r"^\d{4}$").unwrap();
+        lazy_static! {
+            static ref RE: Regex = Regex::new(r"^\d{4}$").unwrap();
+        }
 
-        match re.is_match(s) {
+        match RE.is_match(s) {
             true => Ok(Year { year: s.parse()? }),
             false => Err(anyhow::Error::msg("Invalid year string")),
         }
@@ -203,9 +211,11 @@ impl FromStr for PassportId {
     type Err = anyhow::Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let re = Regex::new(r"^\d{9}$").unwrap();
+        lazy_static! {
+            static ref RE: Regex = Regex::new(r"^\d{9}$").unwrap();
+        }
 
-        match re.is_match(s) {
+        match RE.is_match(s) {
             true => Ok(PassportId {
                 value: s.to_string(),
             }),

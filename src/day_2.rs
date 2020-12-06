@@ -1,7 +1,12 @@
 use std::convert::Infallible;
 use std::str::FromStr;
 
+use lazy_static::lazy_static;
 use regex::Regex;
+
+lazy_static! {
+    static ref POLICY_REGEX: Regex = Regex::new(r"^(\d+)-(\d+) (\w)$").unwrap();
+}
 
 pub trait PasswordPolicy {
     fn is_satisfied_by(&self, password: &Password) -> bool;
@@ -44,9 +49,11 @@ impl FromStr for OccurrenceRestrictedPasswordPolicy {
     type Err = anyhow::Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let regex = Regex::new(r"^(\d+)-(\d+) (\w)$").unwrap();
+        // lazy_static! {
+        //     static ref RE: Regex = Regex::new(r"^(\d+)-(\d+) (\w)$").unwrap();
+        // }
 
-        match regex.captures(s) {
+        match POLICY_REGEX.captures(s) {
             Some(captures) => Ok(OccurrenceRestrictedPasswordPolicy::new(
                 captures.get(3).unwrap().as_str().parse()?,
                 captures.get(1).unwrap().as_str().parse()?,
@@ -102,9 +109,7 @@ impl FromStr for PositionallyRestrictedPasswordPolicy {
     type Err = anyhow::Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let regex = Regex::new(r"^(\d+)-(\d+) (\w)$").unwrap();
-
-        match regex.captures(s) {
+        match POLICY_REGEX.captures(s) {
             Some(captures) => Ok(PositionallyRestrictedPasswordPolicy::new(
                 captures.get(3).unwrap().as_str().parse()?,
                 captures.get(1).unwrap().as_str().parse()?,

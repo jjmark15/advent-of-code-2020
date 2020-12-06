@@ -10,6 +10,7 @@ edition = "2018"
 structopt = "0.3"
 anyhow = "1.0"
 regex = "1"
+lazy_static = "1.4"
 
 [dev-dependencies]
 spectral = "0.6"
