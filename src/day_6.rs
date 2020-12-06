@@ -50,7 +50,7 @@ impl TravelGroupPositiveAnswerSet {
                     .unwrap()
                     .answers()
                     .clone(),
-                |union, answers| union.intersection(answers).cloned().collect(),
+                |accumulator, answers| accumulator.intersection(answers).cloned().collect(),
             );
 
         TravelGroupPositiveAnswerSet {
@@ -94,8 +94,9 @@ pub fn count_total_group_intersecting_positive_answers(answer_groups: Vec<String
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use spectral::prelude::*;
+
+    use super::*;
 
     #[test]
     fn counts_total_group_unified_positive_answers() {
