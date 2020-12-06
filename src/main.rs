@@ -21,7 +21,9 @@ use advent_of_code_2020::day_4::{
     count_valid_strict_validation_passports_in_text,
 };
 use advent_of_code_2020::day_5::{find_highest_seat_id_on_plane, find_my_empty_seat_id};
-use advent_of_code_2020::day_6::count_total_group_distinct_positive_answers;
+use advent_of_code_2020::day_6::{
+    count_total_group_intersecting_positive_answers, count_total_group_unified_positive_answers,
+};
 
 use crate::cli::Opt;
 
@@ -139,8 +141,8 @@ fn run_day_6(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Resu
         .collect();
 
     let result: usize = match part {
-        ChallengePart::One => count_total_group_distinct_positive_answers(passport_strings),
-        ChallengePart::Two => unimplemented!(),
+        ChallengePart::One => count_total_group_unified_positive_answers(passport_strings),
+        ChallengePart::Two => count_total_group_intersecting_positive_answers(passport_strings),
     };
 
     println!("{}", Answer::new(result));
