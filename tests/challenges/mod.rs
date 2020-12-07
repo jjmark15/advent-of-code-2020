@@ -6,6 +6,7 @@ mod day_03;
 mod day_04;
 mod day_05;
 mod day_06;
+mod day_07;
 
 fn challenge_command(day: u8, part: u8) -> assert_cmd::Command {
     let mut cmd = assert_cmd::Command::cargo_bin("advent-of-code-2020").unwrap();

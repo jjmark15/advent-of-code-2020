@@ -11,6 +11,7 @@ structopt = "0.3"
 anyhow = "1.0"
 regex = "1"
 lazy_static = "1.4"
+petgraph = "0.5"
 
 [dev-dependencies]
 spectral = "0.6"

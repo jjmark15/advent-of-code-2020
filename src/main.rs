@@ -24,6 +24,7 @@ use advent_of_code_2020::day_5::{find_highest_seat_id_on_plane, find_my_empty_se
 use advent_of_code_2020::day_6::{
     count_total_group_intersecting_positive_answers, count_total_group_unified_positive_answers,
 };
+use advent_of_code_2020::day_7::count_bags_that_eventually_contain;
 
 use crate::cli::Opt;
 
@@ -45,6 +46,7 @@ fn execute_challenge(challenge: Challenge, input_text_lines: Vec<String>) {
         4 => run_day_4(challenge.part(), input_text_lines).unwrap(),
         5 => run_day_5(challenge.part(), input_text_lines).unwrap(),
         6 => run_day_6(challenge.part(), input_text_lines).unwrap(),
+        7 => run_day_7(challenge.part(), input_text_lines).unwrap(),
         _ => unimplemented!(),
     }
 }
@@ -143,6 +145,16 @@ fn run_day_6(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Resu
     let result: usize = match part {
         ChallengePart::One => count_total_group_unified_positive_answers(passport_strings),
         ChallengePart::Two => count_total_group_intersecting_positive_answers(passport_strings),
+    };
+
+    println!("{}", Answer::new(result));
+    Ok(())
+}
+
+fn run_day_7(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Result<()> {
+    let result: usize = match part {
+        ChallengePart::One => count_bags_that_eventually_contain(input_text_lines, "shiny gold")?,
+        ChallengePart::Two => unimplemented!(),
     };
 
     println!("{}", Answer::new(result));
