@@ -3,6 +3,7 @@ use std::str::FromStr;
 
 use lazy_static::lazy_static;
 use petgraph::prelude::{Dfs, NodeIndex};
+use petgraph::Direction::Incoming;
 use petgraph::Graph;
 use regex::Regex;
 
@@ -18,16 +19,20 @@ impl Bag {
 #[cfg_attr(test, derive(Debug))]
 struct BagQuantity {
     bag: Bag,
-    _count: usize,
+    count: usize,
 }
 
 impl BagQuantity {
     fn new(bag: Bag, count: usize) -> Self {
-        BagQuantity { bag, _count: count }
+        BagQuantity { bag, count }
     }
 
     fn bag(&self) -> &Bag {
         &self.bag
+    }
+
+    fn count(&self) -> usize {
+        self.count
     }
 }
 
@@ -99,9 +104,9 @@ impl BagRuleWalker {
         BagRuleWalker { rules }
     }
 
-    fn build_rule_graph(&self) -> (Graph<Bag, u32>, HashMap<Bag, NodeIndex>) {
+    fn build_rule_graph(&self) -> (Graph<Bag, usize>, HashMap<Bag, NodeIndex>) {
         let mut bag_node_indexes: HashMap<Bag, NodeIndex> = HashMap::new();
-        let mut graph: Graph<Bag, u32> = Graph::new();
+        let mut graph: Graph<Bag, usize> = Graph::new();
 
         self.rules.iter().for_each(|rule| {
             let parent = rule.parent();
@@ -118,7 +123,7 @@ impl BagRuleWalker {
                 graph.add_edge(
                     *bag_node_indexes.get(parent).unwrap(),
                     *bag_node_indexes.get(bag).unwrap(),
-                    1,
+                    quantity.count(),
                 );
             });
         });
@@ -140,6 +145,24 @@ impl BagRuleWalker {
 
         count - 1
     }
+
+    fn count_nested_bags(&self, bag: Bag) -> usize {
+        let (mut graph, bag_node_indexes) = self.build_rule_graph();
+
+        let mut count = 0;
+
+        graph.reverse();
+
+        let mut search = Dfs::new(&graph, *bag_node_indexes.get(&bag).unwrap());
+        while let Some(node) = search.next(&graph) {
+            let mut edges = graph.neighbors_directed(node, Incoming).detach();
+            while let Some(edge) = edges.next_edge(&graph) {
+                count += graph[edge];
+            }
+        }
+
+        count
+    }
 }
 
 pub fn count_bags_that_eventually_contain(
@@ -153,6 +176,19 @@ pub fn count_bags_that_eventually_contain(
     let bag_rule_walker = BagRuleWalker::new(bag_rules);
 
     Ok(bag_rule_walker.count_bags_that_eventually_contain(Bag::new(bag_style.to_string())))
+}
+
+pub fn count_bags_nested_inside_a_bag(
+    bag_rule_strings: Vec<String>,
+    bag_style: &str,
+) -> anyhow::Result<usize> {
+    let bag_rules: Vec<BagContainerRule> = bag_rule_strings
+        .iter()
+        .map(|s| s.parse())
+        .collect::<anyhow::Result<Vec<BagContainerRule>>>()?;
+    let bag_rule_walker = BagRuleWalker::new(bag_rules);
+
+    Ok(bag_rule_walker.count_nested_bags(Bag::new(bag_style.to_string())))
 }
 
 #[cfg(test)]
@@ -180,5 +216,23 @@ mod tests {
 
         assert_that(&count_bags_that_eventually_contain(rules, "shiny gold").unwrap())
             .is_equal_to(4);
+    }
+
+    #[test]
+    fn counts_how_many_bags_are_nested_inside_a_bag() {
+        let rules = vec![
+            "shiny gold bags contain 2 dark red bags.",
+            "dark red bags contain 2 dark orange bags.",
+            "dark orange bags contain 2 dark yellow bags.",
+            "dark yellow bags contain 2 dark green bags.",
+            "dark green bags contain 2 dark blue bags.",
+            "dark blue bags contain 2 dark violet bags.",
+            "dark violet bags contain no other bags.",
+        ]
+        .iter()
+        .map(ToString::to_string)
+        .collect();
+
+        assert_that(&count_bags_nested_inside_a_bag(rules, "shiny gold").unwrap()).is_equal_to(126);
     }
 }
