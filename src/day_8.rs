@@ -3,6 +3,7 @@ use std::str::FromStr;
 use lazy_static::lazy_static;
 use regex::Regex;
 
+#[derive(Copy, Clone)]
 enum BootOperation {
     Jump,
     Accumulate,
@@ -25,6 +26,7 @@ impl FromStr for BootOperation {
     }
 }
 
+#[derive(Copy, Clone)]
 struct BootInstruction {
     operation: BootOperation,
     argument: i64,
@@ -120,6 +122,10 @@ impl Executor {
     fn next_instruction_index(&self) -> usize {
         self.next_instruction_index
     }
+
+    fn terminated(&self) -> bool {
+        self.next_instruction_index == self.boot_instructions.len()
+    }
 }
 
 struct ExecutionHistory {
@@ -137,41 +143,48 @@ impl ExecutionHistory {
         self.index_history.push(*index);
     }
 
-    fn length(&self) -> usize {
-        self.index_history.len()
-    }
-
     fn contains(&self, index: &usize) -> bool {
         self.index_history.contains(index)
     }
 }
 
-struct BootDebugger;
+struct BootDebugger {
+    execution_history: ExecutionHistory,
+    executor: Executor,
+}
 
 impl BootDebugger {
-    fn new() -> Self {
-        BootDebugger
+    fn new(boot_instructions: Vec<BootInstruction>) -> Self {
+        BootDebugger {
+            execution_history: ExecutionHistory::new(),
+            executor: Executor::new(boot_instructions),
+        }
     }
 
-    fn get_accumulator_value_before_repeated_instruction(
-        &self,
-        boot_instructions: Vec<BootInstruction>,
-    ) -> anyhow::Result<i64> {
-        let mut execution_record = ExecutionHistory::new();
-        let expected_max_execution_length = boot_instructions.len();
-        let mut executor = Executor::new(boot_instructions);
-
-        while execution_record.length() <= expected_max_execution_length {
-            let next_instruction_index = executor.next_instruction_index();
-            if !execution_record.contains(&next_instruction_index) {
-                executor.apply_next_instruction()?;
-                execution_record.record(&next_instruction_index);
+    fn get_accumulator_value_before_repeated_instruction(&mut self) -> anyhow::Result<i64> {
+        loop {
+            let next_instruction_index = self.executor.next_instruction_index();
+            if !self.execution_history.contains(&next_instruction_index)
+                && !self.executor.terminated()
+            {
+                self.executor.apply_next_instruction()?;
+                self.execution_history.record(&next_instruction_index);
             } else {
                 break;
             }
         }
 
-        Ok(executor.accumulated_value())
+        Ok(self.executor.accumulated_value())
+    }
+
+    fn execute_to_termination(&mut self) -> anyhow::Result<i64> {
+        let accumulator_value = self.get_accumulator_value_before_repeated_instruction()?;
+
+        if self.executor.terminated() {
+            Ok(accumulator_value)
+        } else {
+            Err(anyhow::Error::msg("Did not complete"))
+        }
     }
 }
 
@@ -182,7 +195,42 @@ pub fn get_accumulator_value_before_repeated_instruction(
         .iter()
         .map(|instruction_string| instruction_string.parse())
         .collect::<anyhow::Result<Vec<BootInstruction>>>()?;
-    Ok(BootDebugger::new().get_accumulator_value_before_repeated_instruction(boot_instructions)?)
+    Ok(BootDebugger::new(boot_instructions).get_accumulator_value_before_repeated_instruction()?)
+}
+
+pub fn get_accumulator_value_after_termination_of_fixed_instructions(
+    boot_instruction_strings: Vec<String>,
+) -> anyhow::Result<i64> {
+    let boot_instructions = boot_instruction_strings
+        .iter()
+        .map(|instruction_string| instruction_string.parse())
+        .collect::<anyhow::Result<Vec<BootInstruction>>>()?;
+
+    for (i, boot_instruction) in boot_instructions.iter().enumerate() {
+        let result = match boot_instruction.operation() {
+            BootOperation::Jump => {
+                let mut altered_boot_instructions = boot_instructions.clone();
+                altered_boot_instructions[i] =
+                    BootInstruction::new(BootOperation::NoOperation, boot_instruction.argument());
+                BootDebugger::new(altered_boot_instructions).execute_to_termination()
+            }
+            BootOperation::NoOperation => {
+                let mut altered_boot_instructions = boot_instructions.clone();
+                altered_boot_instructions[i] =
+                    BootInstruction::new(BootOperation::Jump, boot_instruction.argument());
+                BootDebugger::new(altered_boot_instructions).execute_to_termination()
+            }
+            BootOperation::Accumulate => Err(anyhow::Error::msg("Did not alter instructions")),
+        };
+
+        if result.is_ok() {
+            return result;
+        }
+    }
+
+    Err(anyhow::Error::msg(
+        "Did not find fixed version of instructions",
+    ))
 }
 
 #[cfg(test)]
@@ -205,5 +253,24 @@ mod tests {
             &get_accumulator_value_before_repeated_instruction(boot_instruction_strings).unwrap(),
         )
         .is_equal_to(5);
+    }
+
+    #[test]
+    fn gets_accumulator_value_after_termination_of_fixed_instructions() {
+        let boot_instruction_strings = vec![
+            "nop +0", "acc +1", "jmp +4", "acc +3", "jmp -3", "acc -99", "acc +1", "jmp -4",
+            "acc +6",
+        ]
+        .iter()
+        .map(ToString::to_string)
+        .collect();
+
+        assert_that(
+            &get_accumulator_value_after_termination_of_fixed_instructions(
+                boot_instruction_strings,
+            )
+            .unwrap(),
+        )
+        .is_equal_to(8);
     }
 }

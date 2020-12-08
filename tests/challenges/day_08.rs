@@ -6,3 +6,10 @@ fn day_07_part_1() {
 
     cmd.assert().success().stdout("Answer: 1766\n");
 }
+
+#[test]
+fn day_07_part_2() {
+    let mut cmd = challenge_command(8, 2);
+
+    cmd.assert().success().stdout("Answer: 1639\n");
+}

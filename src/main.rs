@@ -25,7 +25,10 @@ use advent_of_code_2020::day_6::{
     count_total_group_intersecting_positive_answers, count_total_group_unified_positive_answers,
 };
 use advent_of_code_2020::day_7::count_bags_that_eventually_contain;
-use advent_of_code_2020::day_8::get_accumulator_value_before_repeated_instruction;
+use advent_of_code_2020::day_8::{
+    get_accumulator_value_after_termination_of_fixed_instructions,
+    get_accumulator_value_before_repeated_instruction,
+};
 
 use crate::cli::Opt;
 
@@ -166,7 +169,9 @@ fn run_day_7(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Resu
 fn run_day_8(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Result<()> {
     let result: i64 = match part {
         ChallengePart::One => get_accumulator_value_before_repeated_instruction(input_text_lines)?,
-        ChallengePart::Two => unimplemented!(),
+        ChallengePart::Two => {
+            get_accumulator_value_after_termination_of_fixed_instructions(input_text_lines)?
+        }
     };
 
     println!("{}", Answer::new(result));
