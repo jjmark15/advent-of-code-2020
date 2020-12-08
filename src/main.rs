@@ -25,6 +25,7 @@ use advent_of_code_2020::day_6::{
     count_total_group_intersecting_positive_answers, count_total_group_unified_positive_answers,
 };
 use advent_of_code_2020::day_7::count_bags_that_eventually_contain;
+use advent_of_code_2020::day_8::get_accumulator_value_before_repeated_instruction;
 
 use crate::cli::Opt;
 
@@ -47,6 +48,7 @@ fn execute_challenge(challenge: Challenge, input_text_lines: Vec<String>) {
         5 => run_day_5(challenge.part(), input_text_lines).unwrap(),
         6 => run_day_6(challenge.part(), input_text_lines).unwrap(),
         7 => run_day_7(challenge.part(), input_text_lines).unwrap(),
+        8 => run_day_8(challenge.part(), input_text_lines).unwrap(),
         _ => unimplemented!(),
     }
 }
@@ -154,6 +156,16 @@ fn run_day_6(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Resu
 fn run_day_7(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Result<()> {
     let result: usize = match part {
         ChallengePart::One => count_bags_that_eventually_contain(input_text_lines, "shiny gold")?,
+        ChallengePart::Two => unimplemented!(),
+    };
+
+    println!("{}", Answer::new(result));
+    Ok(())
+}
+
+fn run_day_8(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Result<()> {
+    let result: i64 = match part {
+        ChallengePart::One => get_accumulator_value_before_repeated_instruction(input_text_lines)?,
         ChallengePart::Two => unimplemented!(),
     };
 
