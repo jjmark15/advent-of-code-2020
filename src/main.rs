@@ -29,6 +29,7 @@ use advent_of_code_2020::day_8::{
     get_accumulator_value_after_termination_of_fixed_instructions,
     get_accumulator_value_before_repeated_instruction,
 };
+use advent_of_code_2020::day_9::find_first_xmas_encoding_error;
 
 use crate::cli::Opt;
 
@@ -52,6 +53,7 @@ fn execute_challenge(challenge: Challenge, input_text_lines: Vec<String>) {
         6 => run_day_6(challenge.part(), input_text_lines).unwrap(),
         7 => run_day_7(challenge.part(), input_text_lines).unwrap(),
         8 => run_day_8(challenge.part(), input_text_lines).unwrap(),
+        9 => run_day_9(challenge.part(), input_text_lines).unwrap(),
         _ => unimplemented!(),
     }
 }
@@ -172,6 +174,16 @@ fn run_day_8(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Resu
         ChallengePart::Two => {
             get_accumulator_value_after_termination_of_fixed_instructions(input_text_lines)?
         }
+    };
+
+    println!("{}", Answer::new(result));
+    Ok(())
+}
+
+fn run_day_9(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Result<()> {
+    let result: u64 = match part {
+        ChallengePart::One => find_first_xmas_encoding_error(input_text_lines, 25)?,
+        ChallengePart::Two => unimplemented!(),
     };
 
     println!("{}", Answer::new(result));
