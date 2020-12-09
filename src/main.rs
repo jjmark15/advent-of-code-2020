@@ -29,7 +29,7 @@ use advent_of_code_2020::day_8::{
     get_accumulator_value_after_termination_of_fixed_instructions,
     get_accumulator_value_before_repeated_instruction,
 };
-use advent_of_code_2020::day_9::find_first_xmas_encoding_error;
+use advent_of_code_2020::day_9::{find_first_xmas_encoding_error, get_encryption_weakness};
 
 use crate::cli::Opt;
 
@@ -183,7 +183,7 @@ fn run_day_8(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Resu
 fn run_day_9(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Result<()> {
     let result: u64 = match part {
         ChallengePart::One => find_first_xmas_encoding_error(input_text_lines, 25)?,
-        ChallengePart::Two => unimplemented!(),
+        ChallengePart::Two => get_encryption_weakness(input_text_lines, 25)?,
     };
 
     println!("{}", Answer::new(result));
