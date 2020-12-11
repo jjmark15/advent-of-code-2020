@@ -196,7 +196,7 @@ pub fn product_of_tree_encounters_for_movement_sequences(
 mod tests {
     use spectral::prelude::*;
 
-    use crate::day_3::MovementDirection::{Down, Right};
+    use crate::day_03::MovementDirection::{Down, Right};
 
     use super::*;
 

@@ -24,7 +24,7 @@ impl FromStr for Challenge {
     type Err = anyhow::Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let re = Regex::new(r"^(\d)\.(\d)$").unwrap();
+        let re = Regex::new(r"^(\d{1,2})\.(\d)$").unwrap();
         match re.captures(s) {
             Some(captures) => Ok(Challenge {
                 day: captures.get(1).unwrap().as_str().parse().unwrap(),

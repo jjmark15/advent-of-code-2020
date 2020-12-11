@@ -6,30 +6,31 @@ use structopt::StructOpt;
 
 use advent_of_code_2020::answer::Answer;
 use advent_of_code_2020::challenge::{Challenge, ChallengePart};
-use advent_of_code_2020::day_1::{product_of_2020_sum_pair, product_of_2020_sum_triplet};
-use advent_of_code_2020::day_2::{
+use advent_of_code_2020::day_01::{product_of_2020_sum_pair, product_of_2020_sum_triplet};
+use advent_of_code_2020::day_02::{
     count_policies_satisfied_by_passwords, to_policy_and_password,
     OccurrenceRestrictedPasswordPolicy, Password, PositionallyRestrictedPasswordPolicy,
 };
-use advent_of_code_2020::day_3::MovementDirection::{Down, Right};
-use advent_of_code_2020::day_3::{
+use advent_of_code_2020::day_03::MovementDirection::{Down, Right};
+use advent_of_code_2020::day_03::{
     count_encountered_trees_for_movement_sequence,
     product_of_tree_encounters_for_movement_sequences,
 };
-use advent_of_code_2020::day_4::{
+use advent_of_code_2020::day_04::{
     count_valid_relaxed_validation_passports_in_text,
     count_valid_strict_validation_passports_in_text,
 };
-use advent_of_code_2020::day_5::{find_highest_seat_id_on_plane, find_my_empty_seat_id};
-use advent_of_code_2020::day_6::{
+use advent_of_code_2020::day_05::{find_highest_seat_id_on_plane, find_my_empty_seat_id};
+use advent_of_code_2020::day_06::{
     count_total_group_intersecting_positive_answers, count_total_group_unified_positive_answers,
 };
-use advent_of_code_2020::day_7::count_bags_that_eventually_contain;
-use advent_of_code_2020::day_8::{
+use advent_of_code_2020::day_07::count_bags_that_eventually_contain;
+use advent_of_code_2020::day_08::{
     get_accumulator_value_after_termination_of_fixed_instructions,
     get_accumulator_value_before_repeated_instruction,
 };
-use advent_of_code_2020::day_9::{find_first_xmas_encoding_error, get_encryption_weakness};
+use advent_of_code_2020::day_09::{find_first_xmas_encoding_error, get_encryption_weakness};
+use advent_of_code_2020::day_11::count_occupied_seats_after_occupancy_stabilisation;
 
 use crate::cli::Opt;
 
@@ -54,6 +55,7 @@ fn execute_challenge(challenge: Challenge, input_text_lines: Vec<String>) {
         7 => run_day_7(challenge.part(), input_text_lines).unwrap(),
         8 => run_day_8(challenge.part(), input_text_lines).unwrap(),
         9 => run_day_9(challenge.part(), input_text_lines).unwrap(),
+        11 => run_day_11(challenge.part(), input_text_lines).unwrap(),
         _ => unimplemented!(),
     }
 }
@@ -184,6 +186,16 @@ fn run_day_9(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Resu
     let result: u64 = match part {
         ChallengePart::One => find_first_xmas_encoding_error(input_text_lines, 25)?,
         ChallengePart::Two => get_encryption_weakness(input_text_lines, 25)?,
+    };
+
+    println!("{}", Answer::new(result));
+    Ok(())
+}
+
+fn run_day_11(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Result<()> {
+    let result: usize = match part {
+        ChallengePart::One => count_occupied_seats_after_occupancy_stabilisation(input_text_lines)?,
+        ChallengePart::Two => unimplemented!(),
     };
 
     println!("{}", Answer::new(result));

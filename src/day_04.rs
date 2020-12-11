@@ -3,8 +3,8 @@ use std::str::FromStr;
 use lazy_static::lazy_static;
 use regex::Regex;
 
-use crate::day_4::EyeColour::{Amber, Blue, Brown, Green, Grey, Hazel, Other};
-use crate::day_4::HeightUnit::{Centimetres, Inches};
+use crate::day_04::EyeColour::{Amber, Blue, Brown, Green, Grey, Hazel, Other};
+use crate::day_04::HeightUnit::{Centimetres, Inches};
 
 #[allow(dead_code)]
 struct RelaxedValidationPassport {
