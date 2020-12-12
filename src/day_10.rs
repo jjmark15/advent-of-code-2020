@@ -1,7 +1,7 @@
 use std::ops::{Add, Sub};
 use std::str::FromStr;
 
-#[derive(Debug, Copy, Clone, Ord, PartialOrd, Eq, PartialEq)]
+#[derive(Copy, Clone, Ord, PartialOrd, Eq, PartialEq)]
 struct Joltage(i64);
 
 impl Add for Joltage {
@@ -146,9 +146,6 @@ pub fn product_of_1_and_3_joltage_differences_using_every_adapter_and_built_in(
         .iter()
         .filter(|difference| difference.0 == 1)
         .count();
-
-    dbg!(joltage_difference_of_1_count);
-    dbg!(joltage_difference_of_3_count);
 
     Ok((joltage_difference_of_1_count * joltage_difference_of_3_count) as u64)
 }
