@@ -37,6 +37,7 @@ use advent_of_code_2020::day_12::{
 };
 
 use crate::cli::Opt;
+use advent_of_code_2020::day_10::product_of_1_and_3_joltage_differences_using_every_adapter_and_built_in;
 
 mod cli;
 
@@ -59,6 +60,7 @@ fn execute_challenge(challenge: Challenge, input_text_lines: Vec<String>) {
         7 => run_day_7(challenge.part(), input_text_lines).unwrap(),
         8 => run_day_8(challenge.part(), input_text_lines).unwrap(),
         9 => run_day_9(challenge.part(), input_text_lines).unwrap(),
+        10 => run_day_10(challenge.part(), input_text_lines).unwrap(),
         11 => run_day_11(challenge.part(), input_text_lines).unwrap(),
         12 => run_day_12(challenge.part(), input_text_lines).unwrap(),
         _ => unimplemented!(),
@@ -191,6 +193,20 @@ fn run_day_9(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Resu
     let result: u64 = match part {
         ChallengePart::One => find_first_xmas_encoding_error(input_text_lines, 25)?,
         ChallengePart::Two => get_encryption_weakness(input_text_lines, 25)?,
+    };
+
+    println!("{}", Answer::new(result));
+    Ok(())
+}
+
+fn run_day_10(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Result<()> {
+    let result: u64 = match part {
+        ChallengePart::One => {
+            product_of_1_and_3_joltage_differences_using_every_adapter_and_built_in(
+                input_text_lines,
+            )?
+        }
+        ChallengePart::Two => unimplemented!(),
     };
 
     println!("{}", Answer::new(result));
