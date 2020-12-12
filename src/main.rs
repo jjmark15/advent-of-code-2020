@@ -31,7 +31,10 @@ use advent_of_code_2020::day_08::{
 };
 use advent_of_code_2020::day_09::{find_first_xmas_encoding_error, get_encryption_weakness};
 use advent_of_code_2020::day_11::count_occupied_seats_after_occupancy_stabilisation;
-use advent_of_code_2020::day_12::get_manhattan_distance_to_directed_location;
+use advent_of_code_2020::day_12::{
+    get_manhattan_distance_to_directed_location,
+    get_manhattan_distance_to_directed_location_with_waypoint_navigation,
+};
 
 use crate::cli::Opt;
 
@@ -207,7 +210,9 @@ fn run_day_11(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Res
 fn run_day_12(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Result<()> {
     let result: u64 = match part {
         ChallengePart::One => get_manhattan_distance_to_directed_location(input_text_lines)?,
-        ChallengePart::Two => unimplemented!(),
+        ChallengePart::Two => {
+            get_manhattan_distance_to_directed_location_with_waypoint_navigation(input_text_lines)?
+        }
     };
 
     println!("{}", Answer::new(result));

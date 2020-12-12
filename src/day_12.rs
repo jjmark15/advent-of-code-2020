@@ -73,13 +73,17 @@ impl FromStr for NavigationInstruction {
     }
 }
 
-#[derive(Default)]
+#[derive(Default, Copy, Clone)]
 struct RelativePosition {
     east: i64,
     north: i64,
 }
 
 impl RelativePosition {
+    fn new(east: i64, north: i64) -> Self {
+        RelativePosition { east, north }
+    }
+
     fn east(&self) -> i64 {
         self.east
     }
@@ -94,6 +98,21 @@ impl RelativePosition {
 
     fn translate_north(&mut self, value: i64) {
         self.north += value;
+    }
+
+    fn set_east(&mut self, east: i64) {
+        self.east = east;
+    }
+
+    fn set_north(&mut self, north: i64) {
+        self.north = north;
+    }
+}
+
+impl AddAssign for RelativePosition {
+    fn add_assign(&mut self, rhs: Self) {
+        self.north += rhs.north;
+        self.east += rhs.east;
     }
 }
 
@@ -149,14 +168,14 @@ impl Orientation {
     }
 }
 
-struct Navigator {
+struct ShipNavigator {
     relative_position: RelativePosition,
     orientation: Orientation,
 }
 
-impl Navigator {
+impl ShipNavigator {
     fn new(starting_position: RelativePosition, starting_orientation: Orientation) -> Self {
-        Navigator {
+        ShipNavigator {
             relative_position: starting_position,
             orientation: starting_orientation,
         }
@@ -215,22 +234,125 @@ impl Navigator {
     }
 }
 
+struct ShipWaypointNavigator {
+    ship_position: RelativePosition,
+    waypoint_position_relative_to_ship: RelativePosition,
+}
+
+impl ShipWaypointNavigator {
+    fn new(
+        ship_starting_position: RelativePosition,
+        waypoint_position_relative_to_ship: RelativePosition,
+    ) -> Self {
+        ShipWaypointNavigator {
+            ship_position: ship_starting_position,
+            waypoint_position_relative_to_ship,
+        }
+    }
+
+    fn move_ship_to_waypoint_times(&mut self, value: u64) {
+        (0..value).for_each(|_| self.ship_position += self.waypoint_position_relative_to_ship);
+    }
+
+    fn rotate_waypoint_about_ship_by_90_degrees(&mut self, times: u64) {
+        (0..times).for_each(|_| {
+            let new_east = self.waypoint_position_relative_to_ship.north;
+            let new_north = -self.waypoint_position_relative_to_ship.east;
+            self.waypoint_position_relative_to_ship.set_east(new_east);
+            self.waypoint_position_relative_to_ship.set_north(new_north);
+        });
+    }
+
+    fn rotate_waypoint_about_ship(&mut self, degrees: Degrees) -> anyhow::Result<()> {
+        match degrees {
+            Degrees(0) => (),
+            Degrees(90) => self.rotate_waypoint_about_ship_by_90_degrees(1),
+            Degrees(180) => self.rotate_waypoint_about_ship_by_90_degrees(2),
+            Degrees(270) => self.rotate_waypoint_about_ship_by_90_degrees(3),
+            _ => {
+                return Err(anyhow::Error::msg(format!(
+                    "Cannot rotate about {}",
+                    degrees.0
+                )))
+            }
+        };
+
+        Ok(())
+    }
+
+    fn apply_navigation_instructions(
+        &mut self,
+        navigation_instructions: Vec<NavigationInstruction>,
+    ) {
+        for navigation_instruction in &navigation_instructions {
+            match navigation_instruction.kind() {
+                NavigationInstructionKind::North => self
+                    .waypoint_position_relative_to_ship
+                    .translate_north(navigation_instruction.value() as i64),
+                NavigationInstructionKind::South => self
+                    .waypoint_position_relative_to_ship
+                    .translate_north(-(navigation_instruction.value as i64)),
+                NavigationInstructionKind::East => self
+                    .waypoint_position_relative_to_ship
+                    .translate_east(navigation_instruction.value() as i64),
+                NavigationInstructionKind::West => self
+                    .waypoint_position_relative_to_ship
+                    .translate_east(-(navigation_instruction.value() as i64)),
+                NavigationInstructionKind::Left => self
+                    .rotate_waypoint_about_ship(Degrees::from(
+                        -(navigation_instruction.value() as i64),
+                    ))
+                    .unwrap(),
+                NavigationInstructionKind::Right => self
+                    .rotate_waypoint_about_ship(Degrees(navigation_instruction.value()))
+                    .unwrap(),
+                NavigationInstructionKind::Forward => {
+                    self.move_ship_to_waypoint_times(navigation_instruction.value());
+                }
+            }
+        }
+    }
+
+    fn ship_position(&self) -> &RelativePosition {
+        &self.ship_position
+    }
+}
+
 fn manhattan_distance(position: &RelativePosition) -> u64 {
     (position.east().abs() + position.north().abs()) as u64
+}
+
+fn navigation_instructions_from_strings(
+    navigation_instruction_strings: Vec<String>,
+) -> anyhow::Result<Vec<NavigationInstruction>> {
+    navigation_instruction_strings
+        .iter()
+        .map(|s| s.parse())
+        .collect::<anyhow::Result<Vec<NavigationInstruction>>>()
 }
 
 pub fn get_manhattan_distance_to_directed_location(
     navigation_instruction_strings: Vec<String>,
 ) -> anyhow::Result<u64> {
-    let navigation_instructions = navigation_instruction_strings
-        .iter()
-        .map(|s| s.parse())
-        .collect::<anyhow::Result<Vec<NavigationInstruction>>>()?;
+    let mut navigator =
+        ShipNavigator::new(RelativePosition::default(), Orientation::new(90.into()));
 
-    let mut navigator = Navigator::new(RelativePosition::default(), Orientation::new(90.into()));
-
-    navigator.apply_navigation_instructions(navigation_instructions);
+    navigator.apply_navigation_instructions(navigation_instructions_from_strings(
+        navigation_instruction_strings,
+    )?);
     Ok(manhattan_distance(navigator.relative_position()))
+}
+
+pub fn get_manhattan_distance_to_directed_location_with_waypoint_navigation(
+    navigation_instruction_strings: Vec<String>,
+) -> anyhow::Result<u64> {
+    let mut navigator =
+        ShipWaypointNavigator::new(RelativePosition::default(), RelativePosition::new(10, 1));
+
+    navigator.apply_navigation_instructions(navigation_instructions_from_strings(
+        navigation_instruction_strings,
+    )?);
+    Ok(manhattan_distance(navigator.ship_position()))
 }
 
 #[cfg(test)]
@@ -250,5 +372,21 @@ mod tests {
             &get_manhattan_distance_to_directed_location(navigation_instruction_strings).unwrap(),
         )
         .is_equal_to(25);
+    }
+
+    #[test]
+    fn gets_manhattan_distance_to_directed_location_with_waypoint_navigation() {
+        let navigation_instruction_strings = vec!["F10", "N3", "F7", "R90", "F11"]
+            .iter()
+            .map(ToString::to_string)
+            .collect();
+
+        assert_that(
+            &get_manhattan_distance_to_directed_location_with_waypoint_navigation(
+                navigation_instruction_strings,
+            )
+            .unwrap(),
+        )
+        .is_equal_to(286);
     }
 }
