@@ -49,10 +49,6 @@ impl FromStr for OccurrenceRestrictedPasswordPolicy {
     type Err = anyhow::Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        // lazy_static! {
-        //     static ref RE: Regex = Regex::new(r"^(\d+)-(\d+) (\w)$").unwrap();
-        // }
-
         match POLICY_REGEX.captures(s) {
             Some(captures) => Ok(OccurrenceRestrictedPasswordPolicy::new(
                 captures.get(3).unwrap().as_str().parse()?,

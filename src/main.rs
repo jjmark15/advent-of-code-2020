@@ -31,6 +31,7 @@ use advent_of_code_2020::day_08::{
 };
 use advent_of_code_2020::day_09::{find_first_xmas_encoding_error, get_encryption_weakness};
 use advent_of_code_2020::day_11::count_occupied_seats_after_occupancy_stabilisation;
+use advent_of_code_2020::day_12::get_manhattan_distance_to_directed_location;
 
 use crate::cli::Opt;
 
@@ -56,6 +57,7 @@ fn execute_challenge(challenge: Challenge, input_text_lines: Vec<String>) {
         8 => run_day_8(challenge.part(), input_text_lines).unwrap(),
         9 => run_day_9(challenge.part(), input_text_lines).unwrap(),
         11 => run_day_11(challenge.part(), input_text_lines).unwrap(),
+        12 => run_day_12(challenge.part(), input_text_lines).unwrap(),
         _ => unimplemented!(),
     }
 }
@@ -195,6 +197,16 @@ fn run_day_9(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Resu
 fn run_day_11(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Result<()> {
     let result: usize = match part {
         ChallengePart::One => count_occupied_seats_after_occupancy_stabilisation(input_text_lines)?,
+        ChallengePart::Two => unimplemented!(),
+    };
+
+    println!("{}", Answer::new(result));
+    Ok(())
+}
+
+fn run_day_12(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Result<()> {
+    let result: u64 = match part {
+        ChallengePart::One => get_manhattan_distance_to_directed_location(input_text_lines)?,
         ChallengePart::Two => unimplemented!(),
     };
 
