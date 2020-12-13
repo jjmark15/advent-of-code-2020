@@ -331,7 +331,7 @@ fn navigation_instructions_from_strings(
         .collect::<anyhow::Result<Vec<NavigationInstruction>>>()
 }
 
-pub fn get_manhattan_distance_to_directed_location(
+pub fn manhattan_distance_to_directed_location(
     navigation_instruction_strings: Vec<String>,
 ) -> anyhow::Result<u64> {
     let mut navigator =
@@ -343,7 +343,7 @@ pub fn get_manhattan_distance_to_directed_location(
     Ok(manhattan_distance(navigator.relative_position()))
 }
 
-pub fn get_manhattan_distance_to_directed_location_with_waypoint_navigation(
+pub fn manhattan_distance_to_directed_location_with_waypoint_navigation(
     navigation_instruction_strings: Vec<String>,
 ) -> anyhow::Result<u64> {
     let mut navigator =
@@ -369,7 +369,7 @@ mod tests {
             .collect();
 
         assert_that(
-            &get_manhattan_distance_to_directed_location(navigation_instruction_strings).unwrap(),
+            &manhattan_distance_to_directed_location(navigation_instruction_strings).unwrap(),
         )
         .is_equal_to(25);
     }
@@ -382,7 +382,7 @@ mod tests {
             .collect();
 
         assert_that(
-            &get_manhattan_distance_to_directed_location_with_waypoint_navigation(
+            &manhattan_distance_to_directed_location_with_waypoint_navigation(
                 navigation_instruction_strings,
             )
             .unwrap(),

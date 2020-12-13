@@ -74,7 +74,7 @@ fn travel_group_answer_sets_from_string<S: AsRef<str>>(
         .collect()
 }
 
-pub fn count_total_group_unified_positive_answers(answer_groups: Vec<String>) -> usize {
+pub fn total_group_unified_positive_answers(answer_groups: Vec<String>) -> usize {
     answer_groups
         .iter()
         .map(travel_group_answer_sets_from_string)
@@ -83,7 +83,7 @@ pub fn count_total_group_unified_positive_answers(answer_groups: Vec<String>) ->
         .sum()
 }
 
-pub fn count_total_group_intersecting_positive_answers(answer_groups: Vec<String>) -> usize {
+pub fn total_group_intersecting_positive_answers(answer_groups: Vec<String>) -> usize {
     answer_groups
         .iter()
         .map(travel_group_answer_sets_from_string)
@@ -105,7 +105,7 @@ mod tests {
             .map(ToString::to_string)
             .collect();
 
-        assert_that(&count_total_group_unified_positive_answers(answer_groups)).is_equal_to(11);
+        assert_that(&total_group_unified_positive_answers(answer_groups)).is_equal_to(11);
     }
 
     #[test]
@@ -115,7 +115,7 @@ mod tests {
             .map(ToString::to_string)
             .collect();
 
-        assert_that(&count_total_group_intersecting_positive_answers(
+        assert_that(&total_group_intersecting_positive_answers(
             answer_groups,
         ))
         .is_equal_to(6);

@@ -239,7 +239,7 @@ fn seat_ids(seat_code_strings: Vec<String>) -> anyhow::Result<Vec<SeatId>> {
         .collect())
 }
 
-pub fn find_highest_seat_id_on_plane(seat_code_strings: Vec<String>) -> anyhow::Result<u32> {
+pub fn highest_seat_id_on_plane(seat_code_strings: Vec<String>) -> anyhow::Result<u32> {
     Ok(seat_ids(seat_code_strings)?
         .iter()
         .max()

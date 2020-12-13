@@ -20,23 +20,26 @@ use advent_of_code_2020::day_04::{
     count_valid_relaxed_validation_passports_in_text,
     count_valid_strict_validation_passports_in_text,
 };
-use advent_of_code_2020::day_05::{find_highest_seat_id_on_plane, find_my_empty_seat_id};
+use advent_of_code_2020::day_05::{find_my_empty_seat_id, highest_seat_id_on_plane};
 use advent_of_code_2020::day_06::{
-    count_total_group_intersecting_positive_answers, count_total_group_unified_positive_answers,
+    total_group_intersecting_positive_answers, total_group_unified_positive_answers,
 };
 use advent_of_code_2020::day_07::count_bags_that_eventually_contain;
 use advent_of_code_2020::day_08::{
-    get_accumulator_value_after_termination_of_fixed_instructions,
-    get_accumulator_value_before_repeated_instruction,
+    accumulator_value_after_termination_of_fixed_instructions,
+    accumulator_value_before_repeated_instruction,
 };
-use advent_of_code_2020::day_09::{find_first_xmas_encoding_error, get_encryption_weakness};
+use advent_of_code_2020::day_09::{encryption_weakness, first_xmas_encoding_error};
 use advent_of_code_2020::day_10::product_of_1_and_3_joltage_differences_using_every_adapter_and_built_in;
 use advent_of_code_2020::day_11::count_occupied_seats_after_occupancy_stabilisation;
 use advent_of_code_2020::day_12::{
-    get_manhattan_distance_to_directed_location,
-    get_manhattan_distance_to_directed_location_with_waypoint_navigation,
+    manhattan_distance_to_directed_location,
+    manhattan_distance_to_directed_location_with_waypoint_navigation,
 };
-use advent_of_code_2020::day_13::get_product_of_id_of_earliest_bus_and_wait_time;
+use advent_of_code_2020::day_13::{
+    earliest_timestamp_such_that_all_listed_buses_depart_at_offsets_matching_their_positions,
+    product_of_id_of_earliest_bus_and_wait_time,
+};
 
 use crate::cli::Opt;
 
@@ -145,7 +148,7 @@ fn run_day_4(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Resu
 
 fn run_day_5(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Result<()> {
     let result = match part {
-        ChallengePart::One => find_highest_seat_id_on_plane(input_text_lines)?,
+        ChallengePart::One => highest_seat_id_on_plane(input_text_lines)?,
         ChallengePart::Two => find_my_empty_seat_id(input_text_lines)?,
     };
 
@@ -161,8 +164,8 @@ fn run_day_6(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Resu
         .collect();
 
     let result: usize = match part {
-        ChallengePart::One => count_total_group_unified_positive_answers(passport_strings),
-        ChallengePart::Two => count_total_group_intersecting_positive_answers(passport_strings),
+        ChallengePart::One => total_group_unified_positive_answers(passport_strings),
+        ChallengePart::Two => total_group_intersecting_positive_answers(passport_strings),
     };
 
     println!("{}", Answer::new(result));
@@ -181,9 +184,9 @@ fn run_day_7(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Resu
 
 fn run_day_8(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Result<()> {
     let result: i64 = match part {
-        ChallengePart::One => get_accumulator_value_before_repeated_instruction(input_text_lines)?,
+        ChallengePart::One => accumulator_value_before_repeated_instruction(input_text_lines)?,
         ChallengePart::Two => {
-            get_accumulator_value_after_termination_of_fixed_instructions(input_text_lines)?
+            accumulator_value_after_termination_of_fixed_instructions(input_text_lines)?
         }
     };
 
@@ -193,8 +196,8 @@ fn run_day_8(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Resu
 
 fn run_day_9(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Result<()> {
     let result: u64 = match part {
-        ChallengePart::One => find_first_xmas_encoding_error(input_text_lines, 25)?,
-        ChallengePart::Two => get_encryption_weakness(input_text_lines, 25)?,
+        ChallengePart::One => first_xmas_encoding_error(input_text_lines, 25)?,
+        ChallengePart::Two => encryption_weakness(input_text_lines, 25)?,
     };
 
     println!("{}", Answer::new(result));
@@ -227,9 +230,9 @@ fn run_day_11(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Res
 
 fn run_day_12(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Result<()> {
     let result: u64 = match part {
-        ChallengePart::One => get_manhattan_distance_to_directed_location(input_text_lines)?,
+        ChallengePart::One => manhattan_distance_to_directed_location(input_text_lines)?,
         ChallengePart::Two => {
-            get_manhattan_distance_to_directed_location_with_waypoint_navigation(input_text_lines)?
+            manhattan_distance_to_directed_location_with_waypoint_navigation(input_text_lines)?
         }
     };
 
@@ -239,8 +242,8 @@ fn run_day_12(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Res
 
 fn run_day_13(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Result<()> {
     let result: u64 = match part {
-        ChallengePart::One => get_product_of_id_of_earliest_bus_and_wait_time(input_text_lines)?,
-        ChallengePart::Two => unimplemented!(),
+        ChallengePart::One => product_of_id_of_earliest_bus_and_wait_time(input_text_lines)?,
+        ChallengePart::Two => earliest_timestamp_such_that_all_listed_buses_depart_at_offsets_matching_their_positions(input_text_lines)?,
     };
 
     println!("{}", Answer::new(result));

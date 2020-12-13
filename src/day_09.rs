@@ -79,7 +79,7 @@ impl XMASDecrypter {
     }
 }
 
-pub fn find_first_xmas_encoding_error(
+pub fn first_xmas_encoding_error(
     xmas_encrypted_message_strings: Vec<String>,
     preamble_length: usize,
 ) -> anyhow::Result<u64> {
@@ -92,7 +92,7 @@ pub fn find_first_xmas_encoding_error(
     xmas_decrypter.find_first_encoding_error_instance(&xmas_encrypted_messages, preamble_length)
 }
 
-pub fn get_encryption_weakness(
+pub fn encryption_weakness(
     xmas_encrypted_message_strings: Vec<String>,
     preamble_length: usize,
 ) -> anyhow::Result<u64> {
@@ -121,7 +121,7 @@ mod tests {
         .map(ToString::to_string)
         .collect();
 
-        assert_that(&find_first_xmas_encoding_error(xmas_encrypted_message_strings, 5).unwrap())
+        assert_that(&first_xmas_encoding_error(xmas_encrypted_message_strings, 5).unwrap())
             .is_equal_to(127);
     }
 
@@ -135,7 +135,7 @@ mod tests {
         .map(ToString::to_string)
         .collect();
 
-        assert_that(&get_encryption_weakness(xmas_encrypted_message_strings, 5).unwrap())
+        assert_that(&encryption_weakness(xmas_encrypted_message_strings, 5).unwrap())
             .is_equal_to(62);
     }
 }

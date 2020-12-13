@@ -188,7 +188,7 @@ impl BootDebugger {
     }
 }
 
-pub fn get_accumulator_value_before_repeated_instruction(
+pub fn accumulator_value_before_repeated_instruction(
     boot_instruction_strings: Vec<String>,
 ) -> anyhow::Result<i64> {
     let boot_instructions = boot_instruction_strings
@@ -198,7 +198,7 @@ pub fn get_accumulator_value_before_repeated_instruction(
     Ok(BootDebugger::new(boot_instructions).get_accumulator_value_before_repeated_instruction()?)
 }
 
-pub fn get_accumulator_value_after_termination_of_fixed_instructions(
+pub fn accumulator_value_after_termination_of_fixed_instructions(
     boot_instruction_strings: Vec<String>,
 ) -> anyhow::Result<i64> {
     let boot_instructions = boot_instruction_strings
@@ -250,7 +250,7 @@ mod tests {
         .collect();
 
         assert_that(
-            &get_accumulator_value_before_repeated_instruction(boot_instruction_strings).unwrap(),
+            &accumulator_value_before_repeated_instruction(boot_instruction_strings).unwrap(),
         )
         .is_equal_to(5);
     }
@@ -266,7 +266,7 @@ mod tests {
         .collect();
 
         assert_that(
-            &get_accumulator_value_after_termination_of_fixed_instructions(
+            &accumulator_value_after_termination_of_fixed_instructions(
                 boot_instruction_strings,
             )
             .unwrap(),
