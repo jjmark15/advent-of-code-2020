@@ -30,14 +30,15 @@ use advent_of_code_2020::day_08::{
     get_accumulator_value_before_repeated_instruction,
 };
 use advent_of_code_2020::day_09::{find_first_xmas_encoding_error, get_encryption_weakness};
+use advent_of_code_2020::day_10::product_of_1_and_3_joltage_differences_using_every_adapter_and_built_in;
 use advent_of_code_2020::day_11::count_occupied_seats_after_occupancy_stabilisation;
 use advent_of_code_2020::day_12::{
     get_manhattan_distance_to_directed_location,
     get_manhattan_distance_to_directed_location_with_waypoint_navigation,
 };
+use advent_of_code_2020::day_13::get_product_of_id_of_earliest_bus_and_wait_time;
 
 use crate::cli::Opt;
-use advent_of_code_2020::day_10::product_of_1_and_3_joltage_differences_using_every_adapter_and_built_in;
 
 mod cli;
 
@@ -63,6 +64,7 @@ fn execute_challenge(challenge: Challenge, input_text_lines: Vec<String>) {
         10 => run_day_10(challenge.part(), input_text_lines).unwrap(),
         11 => run_day_11(challenge.part(), input_text_lines).unwrap(),
         12 => run_day_12(challenge.part(), input_text_lines).unwrap(),
+        13 => run_day_13(challenge.part(), input_text_lines).unwrap(),
         _ => unimplemented!(),
     }
 }
@@ -229,6 +231,16 @@ fn run_day_12(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Res
         ChallengePart::Two => {
             get_manhattan_distance_to_directed_location_with_waypoint_navigation(input_text_lines)?
         }
+    };
+
+    println!("{}", Answer::new(result));
+    Ok(())
+}
+
+fn run_day_13(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Result<()> {
+    let result: u64 = match part {
+        ChallengePart::One => get_product_of_id_of_earliest_bus_and_wait_time(input_text_lines)?,
+        ChallengePart::Two => unimplemented!(),
     };
 
     println!("{}", Answer::new(result));
