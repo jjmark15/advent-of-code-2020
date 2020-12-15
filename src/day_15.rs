@@ -30,23 +30,23 @@ impl RecitationGame {
         }
     }
 
-    fn add_spoken_number_to_memory(&mut self, spoken_number: u64) {
-        self.spoken_numbers
-            .insert(spoken_number, self.current_turn - 1);
+    fn memorise_last_spoken_number(&mut self) {
+        if self.last_spoken_number.is_some() {
+            self.spoken_numbers
+                .insert(self.last_spoken_number.unwrap(), self.current_turn - 1);
+        }
     }
 
     fn play_next_turn(&mut self) {
         match self.starting_numbers.pop() {
             Some(n) => {
-                if self.last_spoken_number.is_some() {
-                    self.add_spoken_number_to_memory(self.last_spoken_number.unwrap());
-                }
+                self.memorise_last_spoken_number();
                 self.speak_number(n);
             }
             None => {
                 let turns_since_n_was_spoken =
                     self.turns_since_n_was_spoken(self.last_spoken_number.unwrap());
-                self.add_spoken_number_to_memory(self.last_spoken_number.unwrap());
+                self.memorise_last_spoken_number();
                 self.speak_number(turns_since_n_was_spoken.unwrap_or(0))
             }
         }
