@@ -254,7 +254,10 @@ fn run_day_15(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Res
         ChallengePart::One => {
             nth_spoken_number_in_recitation_game(2020, input_text_lines.first().unwrap().clone())?
         }
-        ChallengePart::Two => unimplemented!(),
+        ChallengePart::Two => nth_spoken_number_in_recitation_game(
+            30000000,
+            input_text_lines.first().unwrap().clone(),
+        )?,
     };
 
     println!("{}", Answer::new(result));
