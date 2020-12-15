@@ -37,6 +37,7 @@ use advent_of_code_2020::day_12::{
     get_manhattan_distance_to_directed_location_with_waypoint_navigation,
 };
 use advent_of_code_2020::day_13::get_product_of_id_of_earliest_bus_and_wait_time;
+use advent_of_code_2020::day_15::nth_spoken_number_in_recitation_game;
 
 use crate::cli::Opt;
 
@@ -65,6 +66,7 @@ fn execute_challenge(challenge: Challenge, input_text_lines: Vec<String>) {
         11 => run_day_11(challenge.part(), input_text_lines).unwrap(),
         12 => run_day_12(challenge.part(), input_text_lines).unwrap(),
         13 => run_day_13(challenge.part(), input_text_lines).unwrap(),
+        15 => run_day_15(challenge.part(), input_text_lines).unwrap(),
         _ => unimplemented!(),
     }
 }
@@ -240,6 +242,18 @@ fn run_day_12(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Res
 fn run_day_13(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Result<()> {
     let result: u64 = match part {
         ChallengePart::One => get_product_of_id_of_earliest_bus_and_wait_time(input_text_lines)?,
+        ChallengePart::Two => unimplemented!(),
+    };
+
+    println!("{}", Answer::new(result));
+    Ok(())
+}
+
+fn run_day_15(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Result<()> {
+    let result: u64 = match part {
+        ChallengePart::One => {
+            nth_spoken_number_in_recitation_game(2020, input_text_lines.first().unwrap().clone())?
+        }
         ChallengePart::Two => unimplemented!(),
     };
 
