@@ -38,6 +38,7 @@ use advent_of_code_2020::day_12::{
 };
 use advent_of_code_2020::day_13::get_product_of_id_of_earliest_bus_and_wait_time;
 use advent_of_code_2020::day_15::nth_spoken_number_in_recitation_game;
+use advent_of_code_2020::day_16::ticket_scanning_error_rate_for_input_nearby_tickets;
 
 use crate::cli::Opt;
 
@@ -67,6 +68,7 @@ fn execute_challenge(challenge: Challenge, input_text_lines: Vec<String>) {
         12 => run_day_12(challenge.part(), input_text_lines).unwrap(),
         13 => run_day_13(challenge.part(), input_text_lines).unwrap(),
         15 => run_day_15(challenge.part(), input_text_lines).unwrap(),
+        16 => run_day_16(challenge.part(), input_text_lines).unwrap(),
         _ => unimplemented!(),
     }
 }
@@ -258,6 +260,18 @@ fn run_day_15(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Res
             30000000,
             input_text_lines.first().unwrap().clone(),
         )?,
+    };
+
+    println!("{}", Answer::new(result));
+    Ok(())
+}
+
+fn run_day_16(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Result<()> {
+    let result: u64 = match part {
+        ChallengePart::One => {
+            ticket_scanning_error_rate_for_input_nearby_tickets(input_text_lines)?
+        }
+        ChallengePart::Two => unimplemented!(),
     };
 
     println!("{}", Answer::new(result));
