@@ -38,7 +38,9 @@ use advent_of_code_2020::day_12::{
 };
 use advent_of_code_2020::day_13::get_product_of_id_of_earliest_bus_and_wait_time;
 use advent_of_code_2020::day_15::nth_spoken_number_in_recitation_game;
-use advent_of_code_2020::day_16::ticket_scanning_error_rate_for_input_nearby_tickets;
+use advent_of_code_2020::day_16::{
+    product_of_my_departure_field_values, ticket_scanning_error_rate_for_input_nearby_tickets,
+};
 
 use crate::cli::Opt;
 
@@ -271,7 +273,7 @@ fn run_day_16(part: ChallengePart, input_text_lines: Vec<String>) -> anyhow::Res
         ChallengePart::One => {
             ticket_scanning_error_rate_for_input_nearby_tickets(input_text_lines)?
         }
-        ChallengePart::Two => unimplemented!(),
+        ChallengePart::Two => product_of_my_departure_field_values(input_text_lines)?,
     };
 
     println!("{}", Answer::new(result));
