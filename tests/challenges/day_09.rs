@@ -1,15 +1,11 @@
-use crate::challenges::challenge_command;
+use crate::challenges::assert_challenge_result;
 
 #[test]
-fn day_09_part_1() {
-    let mut cmd = challenge_command(9, 1);
-
-    cmd.assert().success().stdout("Answer: 29221323\n");
+fn part_1() {
+    assert_challenge_result(9, 1, "29221323")
 }
 
 #[test]
-fn day_09_part_2() {
-    let mut cmd = challenge_command(9, 2);
-
-    cmd.assert().success().stdout("Answer: 4389369\n");
+fn part_2() {
+    assert_challenge_result(9, 2, "4389369")
 }

@@ -32,3 +32,11 @@ fn challenge_command(day: u8, part: u8) -> assert_cmd::Command {
 fn sample_data_file_name(day: u8) -> String {
     format!("day_{:02}.txt", day)
 }
+
+fn assert_challenge_result(day: u8, part: u8, result: &str) {
+    let mut cmd = challenge_command(day, part);
+
+    cmd.assert()
+        .success()
+        .stdout(format!("Answer: {}\n", result));
+}
